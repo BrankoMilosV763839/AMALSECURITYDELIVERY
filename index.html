@@ -3,95 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMAL - Security Project Simulation (SETTLED)</title>
+    <title>AMAL SECURITY - RED NOTICE PROTOCOL</title>
     
     <!-- Leaflet CSS for Map -->
     <link rel="stylesheet" href="https://unpkg.com" />
     
     <style>
-        :root { --amal-blue: #0a2e5c; --success-green: #27ae60; --bg: #f4f7f9; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #222; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        
-        #tracker-section { width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; margin: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative; }
-        .header { background: var(--amal-blue); color: white; padding: 20px; text-align: center; position: relative; }
-        .live-tag { position: absolute; top: 10px; right: 10px; background: #ff3b30; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.6em; font-weight: bold; animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        :root { 
+            --danger-red: #ff3b30; 
+            --warning-orange: #ff9500;
+            --success-green: #28a745;
+            --dark-bg: #0a0a0a;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #fff; overflow-x: hidden; }
 
+        /* EMERGENCY FULL SCREEN ALERT */
+        .red-notice-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            border: 15px solid var(--danger-red); pointer-events: none;
+            z-index: 1000; animation: pulse-red 1s infinite;
+        }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+
+        #main-container { width: 100%; max-width: 450px; background: #fff; color: #333; border-radius: 25px; overflow: hidden; position: relative; box-shadow: 0 0 60px rgba(255, 0, 0, 0.6); }
+
+        .header { background: #000; color: #fff; padding: 25px; text-align: center; border-bottom: 5px solid var(--danger-red); }
         .body { padding: 20px; }
-        
-        /* STATUS BOX - SETTLED */
-        .status-alert-box { background: #e6fffa; color: #234e52; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 0.85em; margin-bottom: 10px; border: 1px solid #b2f5ea; }
-        #map { height: 250px; width: 100%; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 15px; }
 
-        .settlement-alert { background: #f0fff4; color: #2f855a; padding: 10px; border-radius: 8px; font-size: 0.75em; border: 1px solid #c6f6d5; font-weight: bold; text-align: center; margin-bottom: 15px; }
-        
-        .penalty-box { background: #f0fff4; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #c6f6d5; margin-bottom: 15px; }
-        .penalty-amount { display: block; font-size: 1.3em; font-weight: 800; color: #2f855a; margin-top: 5px; }
+        /* ALERT BOXES */
+        .critical-msg { 
+            background: #fff3f3; border: 3px dashed var(--danger-red); padding: 15px; 
+            border-radius: 15px; text-align: center; color: var(--danger-red); 
+            font-weight: 900; margin-bottom: 15px; animation: shake 0.3s infinite;
+        }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(3px); } 75% { transform: translateX(-3px); } 100% { transform: translateX(0); } }
 
-        .label { color: #888; font-weight: bold; font-size: 0.65em; text-transform: uppercase; margin-top: 10px; }
-        .value { color: #2c3e50; font-weight: 600; font-size: 0.85em; margin-bottom: 5px; }
-        .footer { background: #f1f5f9; text-align: center; padding: 12px; font-size: 0.7em; color: #64748b; font-weight: 600; }
-        
-        .btn-call { width: 100%; padding: 10px; background: var(--success-green); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #map { height: 200px; width: 100%; border-radius: 15px; margin-bottom: 15px; filter: contrast(1.2) saturate(1.5); }
+
+        .security-log { background: #1a1a1a; color: #0f0; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.75em; line-height: 1.4; margin-bottom: 15px; }
+
+        .status-pill { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.7em; text-transform: uppercase; margin-bottom: 10px; }
+        .pill-danger { background: var(--danger-red); color: #fff; }
+        .pill-success { background: var(--success-green); color: #fff; }
+
+        .btn-evac { width: 100%; padding: 18px; background: #000; color: #fff; border: none; border-radius: 12px; font-weight: 900; font-size: 1.1em; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-    <div id="tracker-section">
+    <div class="red-notice-overlay"></div>
+
+    <div id="main-container">
         <div class="header">
-            <div class="live-tag">● LIVE SYSTEM</div>
-            <div style="font-size: 0.6em; opacity: 0.8;">TRACKING ID: AMAL-778592-HR</div>
-            <h2 style="margin: 5px 0;">PARCEL STATUS</h2>
+            <h1 style="margin: 0; font-size: 1.4em;">🚨 RED NOTICE ALERT</h1>
+            <div style="font-size: 0.6em; opacity: 0.7; letter-spacing: 2px;">SECURE-TO-GO | HIJACKING DETECTED</div>
         </div>
         
         <div class="body">
-            <div class="settlement-alert">✅ PAYMENT VERIFIED: Penalty of € 200.00 has been settled.</div>
-
-            <div class="status-alert-box">
-                📦 EN ROUTE: Package released. Current location: Zagreb Police HQ area.
+            <div class="critical-msg">
+                LEAVE THE AREA IMMEDIATELY!<br>
+                <span style="font-size: 0.8em;">Meet-up Aborted. Threats detected 200m from target.</span>
             </div>
 
-            <div class="label">Current Courier Location (Last Seen)</div>
+            <div class="status-pill pill-danger">Hijacking Attempt: ACTIVE</div>
+            <div class="status-pill pill-success">Client Status: EVACUATING</div>
+
             <div id="map"></div>
 
-            <div class="penalty-box">
-                <span style="font-size: 0.7em; color: #2f855a;">SETTLEMENT STATUS:</span>
-                <span class="penalty-amount">€ 200.00 EUR</span>
-                <span style="font-size: 0.65em; color: #2f855a; font-weight: bold;">[PAID & UNLOCKED]</span>
+            <div class="security-log">
+                [SYSTEM LOG: 02:57 AM]<br>
+                > MFA Hijacking detected (Source: PHL)<br>
+                > Unauthorized location sync blocked.<br>
+                > Client was 2 mins from intercept point.<br>
+                > PROTOCOL: SECURE-TO-GO Engaged.
             </div>
 
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
-                <div style="color: #27ae60; font-weight: bold;">DRIVER DISPATCHED</div>
-                <button class="btn-call">📞 CONTACT COURIER</button>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--warning-orange);">
+                <strong style="font-size: 0.85em;">CONSIGNEE UPDATE:</strong><br>
+                <span style="font-size: 0.8em; color: #555;">Branko Miloš has been instructed to proceed to the nearest Police Station. All digital keys for transaction <strong>SETTLED-ESB-2026</strong> have been wiped.</span>
             </div>
 
-            <div class="label">Consignee</div>
-            <div class="value">Branko Miloš</div>
-            <div class="value" style="color: #70757a;">Josipa Juraj Strossmayera 19, 48363 Podravske Sesvete, Croatia</div>
-
-            <div class="label">Transaction Reference</div>
-            <div style="background: #f1f3f4; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.75em;">
-                REF: SETTLED-ESB-2026-0406<br>STATUS: COMPLETED
-            </div>
+            <button class="btn-evac" onclick="alert('GPS SCRAMBLED. CLIENT EN ROUTE TO SAFE ZONE.')">CONFIRM EVACUATION</button>
         </div>
-        <div class="footer">© 2026 AMALSECURITYDELIVERY GLOBAL - SYSTEM SIMULATION</div>
+        
+        <div style="background: #eee; text-align: center; padding: 12px; font-size: 0.6em; color: #666; font-weight: bold;">
+            SYSTEM SIMULATION: PROPERTY OF AMAL SECURITY GLOBAL
+        </div>
     </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com"></script>
-
     <script>
-        // Set map to Ulica Matice Hrvatske 4, Zagreb (Police HQ)
-        var map = L.map('map').setView([45.7995, 15.9967], 15);
+        // Set map to threat location (Zagreb Police Area)
+        var map = L.map('map').setView([45.7995, 15.9967], 16);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        // Marker for the Police Station location
-        var marker = L.marker([45.7995, 15.9967]).addTo(map)
-            .bindPopup("<b>Courier Location:</b><br>Matice Hrvatske 4, Zagreb (Police Area)")
-            .openPopup();
+        // Danger Circle (Hijackers' Location)
+        var threatZone = L.circle([45.7995, 15.9967], {
+            color: 'red', fillColor: '#f03', fillOpacity: 0.5, radius: 100
+        }).addTo(map).bindPopup("<b>INTERCEPT POINT:</b> Avoid Area.").openPopup();
     </script>
 </body>
 </html>
