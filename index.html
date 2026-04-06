@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMALSECURITYDELIVERY - Official Tracker</title>
     <style>
-        :root { --amal-blue: #0a2e5c; --amal-gold: #c5a059; --success: #27ae60; --bg: #f4f7f9; }
+        :root { --amal-blue: #0a2e5c; --amal-gold: #c5a059; --success: #27ae60; --warning: #e67e22; --error: #e74c3c; --bg: #f4f7f9; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
         /* LOGIN BOX */
@@ -23,22 +23,23 @@
 
         .body { padding: 25px; }
         
-        /* BOX IMAGE FROM USER */
+        /* ALERTS AND PENALTY */
+        .status-alert { background: #fff5f5; color: #c92a2a; padding: 15px; border-radius: 10px; font-size: 0.8em; margin-bottom: 12px; border: 1px solid #ffa8a8; line-height: 1.4; font-weight: 500; }
+        .penalty-box { background: #fff9db; color: #856404; padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 20px; border: 2px dashed #fab005; text-align: center; }
+        .penalty-amount { font-size: 1.5em; font-weight: 800; color: #d35400; display: block; margin: 5px 0; }
+
         .package-img { width: 100%; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 1px solid #eee; }
 
-        /* COUNTDOWN BOX */
-        .timer-box { background: #fff9db; border: 1px solid #fab005; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-        #timer-display { font-size: 1.8em; font-weight: 800; color: #e67e22; font-family: monospace; }
+        /* STATUS BOX */
+        .timer-box { background: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+        #status-title { font-size: 1.4em; font-weight: 800; color: var(--error); letter-spacing: 1px; text-transform: uppercase; }
         
-        /* MAP AREA */
-        .map-wrapper { width: 100%; height: 220px; border-radius: 15px; margin: 20px 0; border: 1px solid #ddd; overflow: hidden; position: relative; }
-        .truck-move { position: absolute; font-size: 28px; bottom: 30%; left: -50px; animation: driveTruck 15s infinite linear; z-index: 10; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
-        @keyframes driveTruck { 0% { left: 5%; } 100% { left: 85%; } }
+        .map-placeholder { width: 100%; height: 120px; border-radius: 15px; margin: 20px 0; border: 1px solid #eee; background: #f1f3f5; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 0.8em; font-style: italic; }
 
         /* DETAILS */
-        .label { color: #888; font-weight: bold; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; }
-        .value { color: #2c3e50; font-weight: 600; margin-bottom: 15px; font-size: 0.9em; line-height: 1.5; }
-        .bank-data { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 15px; border-radius: 12px; font-family: monospace; font-size: 0.85em; color: #475569; }
+        .label { color: #888; font-weight: bold; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; }
+        .value { color: #2c3e50; font-weight: 600; margin-bottom: 15px; font-size: 0.9em; line-height: 1.5; border-bottom: 1px solid #f8f9fa; padding-bottom: 8px; }
+        .bank-data { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 15px; border-radius: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.85em; color: #475569; margin-top: 5px; }
         .footer { background: #f1f5f9; text-align: center; padding: 15px; font-size: 0.75em; color: #64748b; font-weight: 600; }
     </style>
 </head>
@@ -51,7 +52,7 @@
         <input type="text" id="user" placeholder="Enter Client ID">
         <input type="password" id="pass" placeholder="Enter Security Password">
         <button class="btn-login" onclick="checkAuth()">AUTHORIZE ACCESS</button>
-        <p id="error-msg" style="color: #e74c3c; font-size: 0.8em; display: none; margin-top: 15px; font-weight: bold;">Invalid Access Token</p>
+        <p id="error-msg" style="color: var(--error); font-size: 0.8em; display: none; margin-top: 15px; font-weight: bold;">Access Denied: Invalid Credentials</p>
     </div>
 
     <!-- TRACKER PANEL -->
@@ -63,20 +64,31 @@
         </div>
         
         <div class="body">
-            <!-- Image ng Box -->
-            <img src="https://ibb.co" class="package-img" title="Verified Shipment Image">
-
-            <!-- Countdown Timer -->
-            <div class="timer-box">
-                <div style="font-size: 0.75em; font-weight: bold; color: #856404; margin-bottom: 5px;">TIME REMAINING UNTIL DISPATCH:</div>
-                <div id="timer-display">00:00:00</div>
-                <div style="font-size: 0.7em; color: #666; margin-top: 5px;">Scheduled Departure: 07:00 AM (local time)</div>
+            <!-- Hold Notice -->
+            <div class="status-alert">
+                <strong>🚨 HOLD NOTICE:</strong> Shipment delivery has been suspended due to incomplete client documentation and processing delays.
             </div>
 
-            <!-- Moving Map -->
-            <div class="map-wrapper">
-                <iframe width="100%" height="100%" frameborder="0" src="https://openstreetmap.org"></iframe>
-                <div class="truck-move">🚚</div>
+            <!-- Penalty Section -->
+            <div class="penalty-box">
+                <span style="font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Administrative Penalty Applied:</span>
+                <span class="penalty-amount">€ 200.00 EUR</span>
+                <span style="font-size: 0.8em;">Reason: Documentation Non-Compliance & Delivery Interruption Fee</span>
+            </div>
+
+            <!-- Image -->
+            <img src="https://ibb.co" class="package-img" alt="Shipment Image">
+
+            <!-- Status -->
+            <div class="timer-box">
+                <div id="status-title">RESCHEDULED</div>
+                <div style="font-size: 0.75em; color: #666; margin-top: 10px; line-height: 1.4;">
+                    Your parcel is currently on hold. Please settle the outstanding penalty and submit all required documents to resume the delivery process.
+                </div>
+            </div>
+
+            <div class="map-placeholder">
+                GPS Tracking Temporarily Disabled (Hold Status Active)
             </div>
 
             <div class="label">Consignee Address</div>
@@ -86,7 +98,7 @@
                 Tel: +385998598878
             </div>
 
-            <div class="label">Secured Banking Reference</div>
+            <div class="label">Payment Reference (Penalty Settlement)</div>
             <div class="bank-data">
                 IBAN: HR51 2402 0063 2089 85605<br>
                 SWIFT: ESBCHR22
@@ -101,40 +113,13 @@
             const p = document.getElementById("pass").value;
             const err = document.getElementById("error-msg");
 
+            // Credentials: 160897 / milos1997
             if(u === "160897" && p === "milos1997") {
                 document.getElementById("login-section").style.display = "none";
                 document.getElementById("tracker-section").style.display = "block";
-                initCountdown();
             } else {
                 err.style.display = "block";
             }
-        }
-
-        function initCountdown() {
-            // Target ay 7:00 AM ngayong araw
-            const target = new Date();
-            target.setHours(7, 0, 0, 0);
-
-            function update() {
-                const now = new Date();
-                const diff = target - now;
-
-                if (diff <= 0) {
-                    document.getElementById("timer-display").innerHTML = "DISPATCHED";
-                    document.getElementById("timer-display").style.color = "#27ae60";
-                    return;
-                }
-
-                const h = Math.floor(diff / (1000 * 60 * 60));
-                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-                document.getElementById("timer-display").innerHTML = 
-                    `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            }
-
-            update();
-            setInterval(update, 1000);
         }
     </script>
 </body>
