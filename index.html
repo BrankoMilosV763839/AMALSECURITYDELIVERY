@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMALSECURITYDELIVERY - Project Simulation</title>
+    <title>AMAL - Security Project Simulation</title>
     
-    <!-- Leaflet CSS para sa Mapa -->
+    <!-- Leaflet CSS for Map -->
     <link rel="stylesheet" href="https://unpkg.com" />
     
     <style>
@@ -17,7 +17,7 @@
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .btn-login { width: 100%; padding: 12px; background: var(--amal-blue); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* TRACKER MAIN (Based sa screenshot mo) */
+        /* TRACKER MAIN */
         #tracker-section { display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; margin: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative; }
         .header { background: var(--amal-blue); color: white; padding: 20px; text-align: center; position: relative; }
         .live-tag { position: absolute; top: 10px; right: 10px; background: #ff3b30; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.6em; font-weight: bold; animation: blink 1.5s infinite; }
@@ -25,8 +25,8 @@
 
         .body { padding: 20px; }
         
-        /* LIVE GPS AREA (Eto yung inayos natin) */
-        .timer-info { background: #e8f0fe; color: #1967d2; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 0.9em; margin-bottom: 10px; }
+        /* THE MAP & STATUS BOX */
+        .status-alert-box { background: #fff4e5; color: #663c00; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 0.85em; margin-bottom: 10px; border: 1px solid #ffe2b3; }
         #map { height: 250px; width: 100%; border-radius: 12px; border: 1px solid #ddd; z-index: 1; margin-bottom: 15px; }
 
         .settlement-alert { background: #fff5f5; color: #c92a2a; padding: 10px; border-radius: 8px; font-size: 0.75em; border: 1px solid #ffa8a8; font-weight: bold; text-align: center; margin-bottom: 15px; }
@@ -43,7 +43,7 @@
     <!-- 1. LOGIN -->
     <div id="login-section">
         <h2 style="color: var(--amal-blue); margin-bottom: 5px;">AMAL SECURE</h2>
-        <p style="font-size: 0.75em; color: #666; margin-bottom: 20px;">Global Logistics & Secure Transit</p>
+        <p style="font-size: 0.75em; color: #666; margin-bottom: 20px;">Project Simulation System</p>
         <input type="text" id="user" placeholder="Client ID (160897)">
         <input type="password" id="pass" placeholder="Password (milos1997)">
         <button class="btn-login" onclick="checkAuth()">AUTHORIZE ACCESS</button>
@@ -60,28 +60,30 @@
         <div class="body">
             <div class="settlement-alert">⚠️ MANDATORY: € 200.00 penalty must be settled immediately.</div>
 
-            <!-- LIVE TIMER -->
-            <div class="timer-info">🚚 Arriving in: <span id="countdown">1:30</span> mins</div>
+            <!-- STATUS MESSAGE: NAKA-STOP ANG DELIVERY -->
+            <div class="status-alert-box">
+                🛑 DELIVERY ON HOLD: Truck is 1:30 mins away. Waiting for penalty settlement to proceed.
+            </div>
 
-            <!-- THE LIVE GPS MAP -->
-            <div class="label">Live GPS Tracking</div>
+            <div class="label">Current Courier Location</div>
             <div id="map"></div>
 
             <div class="penalty-box">
                 <span style="font-size: 0.7em;">PENALTY SURCHARGE:</span>
                 <span class="penalty-amount">€ 200.00 EUR</span>
+                <span style="font-size: 0.65em; color: #d93025; font-weight: bold;">[UNPAID - SYSTEM LOCK]</span>
             </div>
 
             <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
-                <div style="color: #27ae60; font-weight: bold;">OUT FOR DELIVERY</div>
-                <button style="width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">📞 CALL DRIVER</button>
+                <div style="color: #e67e22; font-weight: bold;">WAITING FOR CONFIRMATION</div>
+                <button style="width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">📞 CALL DRIVER (ON HOLD)</button>
             </div>
 
             <div class="label">Consignee</div>
             <div class="value">Branko Miloš</div>
             <div class="value" style="color: #70757a;">Josipa Juraj Strossmayera 19, 48366 Croatia</div>
 
-            <div class="label">Bank Reference</div>
+            <div class="label">Bank Reference for Settlement</div>
             <div style="background: #f1f3f4; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.75em;">
                 IBAN: HR51 2402 0063 2089 85605<br>SWIFT: ESBCHR22
             </div>
@@ -93,8 +95,6 @@
     <script src="https://unpkg.com"></script>
 
     <script>
-        let seconds = 90; // 1:30
-
         function checkAuth() {
             const u = document.getElementById("user").value;
             const p = document.getElementById("pass").value;
@@ -103,53 +103,44 @@
                 document.getElementById("tracker-section").style.display = "block";
                 setTimeout(initMap, 500); 
             } else {
-                alert("Access Denied: Use 160897 / milos1997");
+                alert("Access Denied");
             }
         }
 
         function initMap() {
-            // Target Location sa Croatia (Based sa project address mo)
+            // Naka-stop na Truck position (sa labas ng bahay)
+            const truckPos = [45.9940, 17.2160];
             const destination = [45.9961, 17.2186];
-            let currentPos = [45.9935, 17.2155]; // Start point ng truck
 
-            const map = L.map('map', { zoomControl: false }).setView(currentPos, 16);
+            const map = L.map('map', { 
+                zoomControl: false, 
+                scrollWheelZoom: false, // Naka-lock ang zoom para mukhang GPS lock
+                dragging: false        // Naka-stop ang galaw ng mapa
+            }).setView(truckPos, 16);
 
-            // Voyager Tiles (Malinis na Google Look)
+            // Clean Voyager Tiles
             L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png').addTo(map);
 
-            // House Marker
+            // Destination Marker
             L.marker(destination).addTo(map).bindPopup("<b>Client Location</b>");
 
-            // Moving Truck Icon
+            // STOPPED Truck Icon with Pulsing Effect
             const truckIcon = L.divIcon({ 
-                html: '<div style="font-size:26px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚚</div>', 
+                html: '<div style="font-size:28px; animation: pulse 2s infinite;">🚚</div>', 
                 className: 'dummy' 
             });
-            const truck = L.marker(currentPos, { icon: truckIcon }).addTo(map);
-
-            // TIMER & MOVEMENT LOGIC
-            const timerEl = document.getElementById('countdown');
-            const interval = setInterval(() => {
-                seconds--;
-                
-                // Update Timer Text
-                let m = Math.floor(seconds / 60);
-                let s = seconds % 60;
-                timerEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-
-                // Galawin ang Truck dahan-dahan
-                currentPos += 0.00003;
-                currentPos += 0.00003;
-                truck.setLatLng(currentPos);
-                map.panTo(currentPos);
-
-                if (seconds <= 0) {
-                    clearInterval(interval);
-                    timerEl.innerText = "ARRIVED";
-                    timerEl.style.color = "red";
-                }
-            }, 1000);
+            L.marker(truckPos, { icon: truckIcon }).addTo(map)
+                .bindPopup("<b>STATUS: STOPPED</b><br>Waiting for payment confirmation.")
+                .openPopup();
         }
     </script>
+
+    <style>
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
 </body>
 </html>
