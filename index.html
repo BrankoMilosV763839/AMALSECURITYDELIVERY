@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,11 +37,17 @@
         .label { color: #888; font-weight: bold; font-size: 0.65em; text-transform: uppercase; margin-top: 10px; }
         .value { color: #2c3e50; font-weight: 600; font-size: 0.85em; margin-bottom: 5px; }
         .footer { background: #f1f5f9; text-align: center; padding: 12px; font-size: 0.7em; color: #64748b; font-weight: 600; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- 1. LOGIN -->
+    <!-- 1. LOGIN SECTION -->
     <div id="login-section">
         <h2 style="color: var(--amal-blue); margin-bottom: 5px;">AMAL SECURE</h2>
         <p style="font-size: 0.75em; color: #666; margin-bottom: 20px;">Project Simulation System</p>
@@ -49,7 +56,7 @@
         <button class="btn-login" onclick="checkAuth()">AUTHORIZE ACCESS</button>
     </div>
 
-    <!-- 2. TRACKER (SIMULATION) -->
+    <!-- 2. TRACKER SECTION -->
     <div id="tracker-section">
         <div class="header">
             <div class="live-tag">● LIVE SYSTEM</div>
@@ -60,9 +67,9 @@
         <div class="body">
             <div class="settlement-alert">⚠️ MANDATORY: € 200.00 penalty must be settled immediately.</div>
 
-            <!-- STATUS MESSAGE: NAKA-STOP ANG DELIVERY -->
+            <!-- STATUS: 11:00 PM Update -->
             <div class="status-alert-box">
-                🛑 DELIVERY ON HOLD: Truck is 1:30 mins away. Waiting for penalty settlement to proceed.
+                🛑 DELIVERY ON HOLD: Scheduled for 11:00 PM. Waiting for penalty settlement to proceed.
             </div>
 
             <div class="label">Current Courier Location</div>
@@ -81,7 +88,8 @@
 
             <div class="label">Consignee</div>
             <div class="value">Branko Miloš</div>
-            <div class="value" style="color: #70757a;">Josipa Juraj Strossmayera 19, 48366 Croatia</div>
+            <!-- ADDRESS: Updated to Poreč -->
+            <div class="value" style="color: #70757a;">Žbandaj 47, 52440 Poreč, Croatia</div>
 
             <div class="label">Bank Reference for Settlement</div>
             <div style="background: #f1f3f4; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.75em;">
@@ -91,7 +99,7 @@
         <div class="footer">© 2026 AMALSECURITYDELIVERY GLOBAL</div>
     </div>
 
-    <!-- Leaflet JS -->
+    <!-- Leaflet JS for Map functionality -->
     <script src="https://unpkg.com"></script>
 
     <script>
@@ -108,39 +116,32 @@
         }
 
         function initMap() {
-            // Naka-stop na Truck position (sa labas ng bahay)
-            const truckPos = [45.9940, 17.2160];
-            const destination = [45.9961, 17.2186];
+            // Updated Coordinates for Žbandaj, Poreč Area
+            const truckPos = [45.2162, 13.6610];
+            const destination = [45.2170, 13.6625];
 
             const map = L.map('map', { 
                 zoomControl: false, 
-                scrollWheelZoom: false, // Naka-lock ang zoom para mukhang GPS lock
-                dragging: false        // Naka-stop ang galaw ng mapa
-            }).setView(truckPos, 16);
+                scrollWheelZoom: false, 
+                dragging: false        
+            }).setView(truckPos, 15);
 
-            // Clean Voyager Tiles
-            L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png').addTo(map);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
 
-            // Destination Marker
+            // Client Location Marker
             L.marker(destination).addTo(map).bindPopup("<b>Client Location</b>");
 
-            // STOPPED Truck Icon with Pulsing Effect
+            // STOPPED Truck Icon
             const truckIcon = L.divIcon({ 
                 html: '<div style="font-size:28px; animation: pulse 2s infinite;">🚚</div>', 
                 className: 'dummy' 
             });
             L.marker(truckPos, { icon: truckIcon }).addTo(map)
-                .bindPopup("<b>STATUS: STOPPED</b><br>Waiting for payment confirmation.")
+                .bindPopup("<b>STATUS: STOPPED</b><br>Waiting for settlement.")
                 .openPopup();
         }
     </script>
-
-    <style>
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-    </style>
 </body>
 </html>
