@@ -24,17 +24,18 @@
         .body { padding: 25px; }
         
         /* ALERTS AND PENALTY */
-        .status-alert { background: #fff5f5; color: #c92a2a; padding: 15px; border-radius: 10px; font-size: 0.8em; margin-bottom: 12px; border: 1px solid #ffa8a8; line-height: 1.4; font-weight: 500; }
-        .penalty-box { background: #fff9db; color: #856404; padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 20px; border: 2px dashed #fab005; text-align: center; }
-        .penalty-amount { font-size: 1.5em; font-weight: 800; color: #d35400; display: block; margin: 5px 0; }
+        .status-alert { background: #fffdf5; color: #856404; padding: 15px; border-radius: 10px; font-size: 0.8em; margin-bottom: 12px; border: 1px solid #ffeeba; line-height: 1.4; font-weight: 500; }
+        .penalty-box { background: #fdf2f2; color: #a94442; padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 20px; border: 2px dashed #ebccd1; text-align: center; }
+        .penalty-amount { font-size: 1.5em; font-weight: 800; color: #c92a2a; display: block; margin: 5px 0; }
 
-        .package-img { width: 100%; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 1px solid #eee; }
+        .package-img { width: 100%; border-radius: 15px; margin-bottom: 20px; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
         /* STATUS BOX */
         .timer-box { background: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-        #status-title { font-size: 1.4em; font-weight: 800; color: var(--error); letter-spacing: 1px; text-transform: uppercase; }
+        #status-title { font-size: 1.4em; font-weight: 800; color: var(--success); letter-spacing: 1px; text-transform: uppercase; }
+        .arrival-time { font-size: 0.85em; color: #2c3e50; font-weight: 700; background: #e9ecef; padding: 8px 12px; border-radius: 5px; display: inline-block; margin-top: 10px; border: 1px solid #ddd; }
         
-        .map-placeholder { width: 100%; height: 120px; border-radius: 15px; margin: 20px 0; border: 1px solid #eee; background: #f1f3f5; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 0.8em; font-style: italic; }
+        .map-placeholder { width: 100%; height: 60px; border-radius: 15px; margin: 20px 0; border: 1px solid #eee; background: #f1f3f5; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 0.8em; font-style: italic; }
 
         /* DETAILS */
         .label { color: #888; font-weight: bold; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; }
@@ -52,7 +53,7 @@
         <input type="text" id="user" placeholder="Enter Client ID">
         <input type="password" id="pass" placeholder="Enter Security Password">
         <button class="btn-login" onclick="checkAuth()">AUTHORIZE ACCESS</button>
-        <p id="error-msg" style="color: var(--error); font-size: 0.8em; display: none; margin-top: 15px; font-weight: bold;">Access Denied: Invalid Credentials</p>
+        <p id="error-msg" style="color: var(--error); font-size: 0.8em; display: none; margin-top: 15px; font-weight: bold;">Access Denied</p>
     </div>
 
     <!-- TRACKER PANEL -->
@@ -64,33 +65,37 @@
         </div>
         
         <div class="body">
-            <!-- Hold Notice -->
+            <!-- Delivery Update Alert -->
             <div class="status-alert">
-                <strong>🚨 HOLD NOTICE:</strong> Shipment delivery has been suspended due to incomplete client documentation and processing delays.
+                <strong>🚨 DELIVERY UPDATE:</strong> Shipment is for delivery; however, an additional penalty fee has been applied for non-compliance with dispatch requirements.
             </div>
 
             <!-- Penalty Section -->
             <div class="penalty-box">
-                <span style="font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Administrative Penalty Applied:</span>
+                <span style="font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Additional Penalty Fee:</span>
                 <span class="penalty-amount">€ 200.00 EUR</span>
-                <span style="font-size: 0.8em;">Reason: Documentation Non-Compliance & Delivery Interruption Fee</span>
+                <span style="font-size: 0.75em; line-height: 1.4; display: block; margin-top: 5px;">
+                    <strong>Reason:</strong> Failure to complete mandatory document processing and non-utilization of the reserved dispatch slot.
+                </span>
             </div>
 
-            <!-- Image -->
-            <img src="https://ibb.co" class="package-img" alt="Shipment Image">
+            <!-- Package Image -->
+            <img src="https://ibb.co" class="package-img" alt="Shipment Photo">
 
-            <!-- Status -->
+            <!-- Main Status -->
             <div class="timer-box">
-                <div id="status-title">RESCHEDULED</div>
-                <div style="font-size: 0.75em; color: #666; margin-top: 10px; line-height: 1.4;">
-                    Your parcel is currently on hold. Please settle the outstanding penalty and submit all required documents to resume the delivery process.
+                <div id="status-title">READY FOR DELIVERY</div>
+                <div class="arrival-time">Arrival of Delivery: April 06, 2026 | 03:00 PM</div>
+                <div style="font-size: 0.75em; color: #666; margin-top: 15px; line-height: 1.4;">
+                    Please settle the outstanding penalty fee to finalize the release of your shipment to the consignee.
                 </div>
             </div>
 
             <div class="map-placeholder">
-                GPS Tracking Temporarily Disabled (Hold Status Active)
+                Status: Pending Penalty Settlement
             </div>
 
+            <!-- Consignee Details -->
             <div class="label">Consignee Address</div>
             <div class="value">
                 <strong>Branko Miloš</strong><br>
@@ -98,7 +103,8 @@
                 Tel: +385998598878
             </div>
 
-            <div class="label">Payment Reference (Penalty Settlement)</div>
+            <!-- Banking Reference -->
+            <div class="label">Reference for Penalty Settlement</div>
             <div class="bank-data">
                 IBAN: HR51 2402 0063 2089 85605<br>
                 SWIFT: ESBCHR22
@@ -113,7 +119,7 @@
             const p = document.getElementById("pass").value;
             const err = document.getElementById("error-msg");
 
-            // Credentials: 160897 / milos1997
+            // Credentials: ID (160897) / Password (milos1997)
             if(u === "160897" && p === "milos1997") {
                 document.getElementById("login-section").style.display = "none";
                 document.getElementById("tracker-section").style.display = "block";
