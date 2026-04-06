@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMALSECURITYDELIVERY - Official Tracker</title>
+    
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com" />
+    
     <style>
         :root { --amal-blue: #0a2e5c; --amal-gold: #c5a059; --success: #27ae60; --warning: #e67e22; --error: #e74c3c; --bg: #f4f7f9; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
         
-        /* LOGIN BOX */
+        /* LOGIN SECTION */
         #login-section { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; border-top: 6px solid var(--amal-blue); }
         .logo { font-weight: 900; color: var(--amal-blue); font-size: 1.4em; letter-spacing: 1px; margin-bottom: 25px; }
         input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; background: #f9f9f9; }
         .btn-login { width: 100%; padding: 14px; background: var(--amal-blue); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
 
         /* TRACKER MAIN */
-        #tracker-section { display: none; width: 100%; max-width: 480px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); margin: 20px; }
+        #tracker-section { display: none; width: 100%; max-width: 480px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); margin: 20px; position: relative; }
         .header { background: var(--amal-blue); color: white; padding: 25px; text-align: center; position: relative; }
         .live-tag { position: absolute; top: 15px; right: 15px; background: #ff3b30; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.65em; font-weight: bold; animation: blink 1.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -24,96 +28,139 @@
         
         /* ALERT BOXES */
         .settlement-alert { background: #fff5f5; color: #c92a2a; padding: 15px; border-radius: 10px; font-size: 0.8em; margin-bottom: 15px; border: 1px solid #ffa8a8; line-height: 1.4; font-weight: bold; text-align: center; }
-        .live-update-box { background: #f0f7ff; border-left: 4px solid #007bff; padding: 15px; margin-bottom: 20px; font-size: 0.85em; border-radius: 0 8px 8px 0; line-height: 1.6; }
-        .update-time { font-weight: bold; color: #007bff; }
-
         .penalty-box { background: #fdf2f2; color: #a94442; padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 20px; border: 2px dashed #ebccd1; text-align: center; }
         .penalty-amount { font-size: 1.5em; font-weight: 800; color: #c92a2a; display: block; margin: 5px 0; }
 
-        .package-img { width: 100%; border-radius: 15px; margin-bottom: 20px; border: 1px solid #eee; }
-
-        /* STATUS BOX */
+        /* MAP & STATUS */
+        #map { height: 220px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #ddd; z-index: 1; }
         .timer-box { background: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-        #status-title { font-size: 1.4em; font-weight: 800; color: var(--success); letter-spacing: 1px; text-transform: uppercase; }
-        .arrival-time { font-size: 0.85em; color: #2c3e50; font-weight: 700; background: #e9ecef; padding: 8px 12px; border-radius: 5px; display: inline-block; margin-top: 10px; border: 1px solid #ddd; }
+        #status-title { font-size: 1.4em; font-weight: 800; color: var(--success); letter-spacing: 1px; }
 
         /* DETAILS */
-        .label { color: #888; font-weight: bold; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; }
-        .value { color: #2c3e50; font-weight: 600; margin-bottom: 15px; font-size: 0.9em; line-height: 1.5; border-bottom: 1px solid #f8f9fa; padding-bottom: 8px; }
-        .bank-data { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 15px; border-radius: 12px; font-family: monospace; font-size: 0.85em; color: #475569; }
-        .footer { background: #f1f5f9; text-align: center; padding: 15px; font-size: 0.75em; color: #64748b; font-weight: 600; }
+        .label { color: #888; font-weight: bold; font-size: 0.7em; text-transform: uppercase; margin-top: 15px; }
+        .value { color: #2c3e50; font-weight: 600; margin-bottom: 10px; font-size: 0.9em; line-height: 1.4; }
+        .bank-data { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 0.8em; color: #475569; }
+
+        /* CALL & CHAT OVERLAYS */
+        #call-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; }
+        #chat-window { display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; height: 350px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; flex-direction: column; overflow: hidden; }
+        
+        .footer { background: #f1f5f9; text-align: center; padding: 15px; font-size: 0.7em; color: #64748b; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN PANEL -->
+    <!-- 1. LOGIN PANEL -->
     <div id="login-section">
         <div class="logo">AMALSECURITYDELIVERY</div>
-        <p style="color: #666; font-size: 0.85em;">Global Logistics & Secure Transit</p>
-        <input type="text" id="user" placeholder="Enter Client ID">
-        <input type="password" id="pass" placeholder="Enter Security Password">
+        <p style="color: #666; font-size: 0.8em;">Secure Transit Logistics</p>
+        <input type="text" id="user" placeholder="Enter Client ID (160897)">
+        <input type="password" id="pass" placeholder="Enter Password (milos1997)">
         <button class="btn-login" onclick="checkAuth()">AUTHORIZE ACCESS</button>
-        <p id="error-msg" style="color: var(--error); font-size: 0.8em; display: none; margin-top: 15px; font-weight: bold;">Access Denied</p>
+        <p id="error-msg" style="color: var(--error); font-size: 0.8em; display: none; margin-top: 15px;">Invalid Credentials</p>
     </div>
 
-    <!-- TRACKER PANEL -->
+    <!-- 2. TRACKER PANEL -->
     <div id="tracker-section">
         <div class="header">
             <div class="live-tag">● LIVE SYSTEM</div>
-            <div style="font-size: 0.7em; opacity: 0.8;">TRACKING: AMAL-778592-HR</div>
+            <div style="font-size: 0.65em; opacity: 0.8;">TRACKING ID: AMAL-778592-HR</div>
             <h2 style="margin: 10px 0;">PARCEL STATUS</h2>
         </div>
         
         <div class="body">
-            <!-- Mandatory Settlement Alert -->
             <div class="settlement-alert">
-                ⚠️ MANDATORY NOTICE: The € 200.00 administrative penalty must be settled immediately before final delivery turnover. Failure to settle may result in shipment cancellation or processing delays.
+                ⚠️ MANDATORY: € 200.00 penalty must be settled immediately before turnover.
             </div>
 
-            <!-- Departure Log -->
-            <div class="live-update-box">
-                <span class="update-time">LATEST LOG 09:50 AM:</span> Shipment has successfully departed from the regional logistics hub and is currently out for final delivery.
-            </div>
+            <!-- LIVE MAP -->
+            <div class="label">Live GPS Tracking</div>
+            <div id="map"></div>
 
-            <!-- Penalty Details -->
             <div class="penalty-box">
-                <span style="font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Administrative Penalty Surcharge:</span>
+                <span style="font-weight: bold; font-size: 0.8em;">PENALTY SURCHARGE:</span>
                 <span class="penalty-amount">€ 200.00 EUR</span>
-                <span style="font-size: 0.75em; line-height: 1.4; display: block; margin-top: 5px;">
-                    <strong>Reason:</strong> Failure to finalize mandatory documentation and non-utilization of the pre-reserved dispatch slot.
-                </span>
+                <span style="font-size: 0.7em;">Reason: Documentation Finalization Failure</span>
             </div>
 
-            <img src="https://ibb.co" class="package-img" alt="Verified Package">
-
-            <!-- Expected Contact -->
             <div class="timer-box">
                 <div id="status-title">OUT FOR DELIVERY</div>
-                <div class="arrival-time">Scheduled Arrival: April 06, 2026 | 03:00 PM</div>
-                <div style="font-size: 0.75em; color: #666; margin-top: 15px; line-height: 1.4; font-weight: 500;">
-                    📩 <strong>IMPORTANT:</strong> The delivery agent is scheduled to contact the consignee at exactly <strong>03:00 PM</strong> for final verification and package turnover.
-                </div>
+                <div style="font-size: 0.8em; margin: 10px 0; color: #555;">Arrival: April 06, 2026 | 03:00 PM</div>
+                <button onclick="openCall()" style="width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">📞 CALL DRIVER</button>
             </div>
 
-            <div class="label">Consignee Address</div>
-            <div class="value"><strong>Branko Miloš</strong><br>Josipa Juraj Strosmaajera 19, Podravske Sesvete, 48366, Croatia</div>
+            <div class="label">Consignee</div>
+            <div class="value">Branko Miloš<br>Josipa Juraj Strossmayera 19, Croatia</div>
 
-            <div class="label">Reference for Penalty Settlement</div>
+            <div class="label">Settlement Details</div>
             <div class="bank-data">IBAN: HR51 2402 0063 2089 85605<br>SWIFT: ESBCHR22</div>
         </div>
-        <div class="footer">© 2026 AMALSECURITYDELIVERY GLOBAL SERVICE</div>
+        
+        <div class="footer">© 2026 AMALSECURITYDELIVERY GLOBAL</div>
     </div>
 
+    <!-- 3. INTERACTIVE ELEMENTS (HIDDEN BY DEFAULT) -->
+    <div id="call-overlay">
+        <div style="background: #222; padding: 40px; border-radius: 20px; width: 250px;">
+            <div style="font-size: 3em; margin-bottom: 15px;">👤</div>
+            <h3>Marko K.</h3>
+            <p style="color: #27ae60;">Calling...</p>
+            <button onclick="closeCall()" style="background: #e74c3c; color: white; border: none; padding: 10px 30px; border-radius: 20px; margin-top: 20px; cursor: pointer;">END</button>
+        </div>
+    </div>
+
+    <div id="chat-window">
+        <div style="background: var(--amal-blue); color: white; padding: 15px; font-weight: bold;">Live Support Agent</div>
+        <div id="chat-msgs" style="flex: 1; padding: 15px; font-size: 0.8em; background: #f9f9f9; overflow-y: auto;">
+            <div style="background: #eee; padding: 8px; border-radius: 8px; margin-bottom: 10px;">Driver is 1 min away. Please upload the €200 receipt now.</div>
+        </div>
+        <div style="padding: 10px; border-top: 1px solid #ddd; display: flex;">
+            <input type="text" placeholder="Type here..." style="flex: 1; padding: 5px; font-size: 0.8em;">
+        </div>
+    </div>
+
+    <div onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5em; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1900;">💬</div>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com"></script>
     <script>
+        // AUTHENTICATION
         function checkAuth() {
             const u = document.getElementById("user").value;
             const p = document.getElementById("pass").value;
             if(u === "160897" && p === "milos1997") {
                 document.getElementById("login-section").style.display = "none";
                 document.getElementById("tracker-section").style.display = "block";
+                initMap(); // Start map after login
             } else {
                 document.getElementById("error-msg").style.display = "block";
             }
+        }
+
+        // MAP LOGIC
+        function initMap() {
+            var map = L.map('map').setView([45.9961, 17.2186], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            
+            var marker = L.marker([45.9961, 17.2186]).addTo(map)
+                .bindPopup('<b>Driver:</b> Near Location').openPopup();
+
+            // Fake movement
+            setInterval(() => {
+                let lat = marker.getLatLng().lat + 0.00005;
+                marker.setLatLng([lat, marker.getLatLng().lng]);
+            }, 3000);
+        }
+
+        // CALL & CHAT FUNCTIONS
+        function openCall() { document.getElementById('call-overlay').style.display = 'flex'; }
+        function closeCall() { 
+            document.getElementById('call-overlay').style.display = 'none';
+            alert("Connection error: Settle penalty to enable priority voice line.");
+        }
+        function toggleChat() {
+            const c = document.getElementById('chat-window');
+            c.style.display = (c.style.display === 'none' || c.style.display === '') ? 'flex' : 'none';
         }
     </script>
 </body>
