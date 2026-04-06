@@ -13,7 +13,6 @@
         .logo { font-weight: 900; color: var(--amal-blue); font-size: 1.4em; letter-spacing: 1px; margin-bottom: 25px; }
         input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; background: #f9f9f9; }
         .btn-login { width: 100%; padding: 14px; background: var(--amal-blue); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-login:hover { background: #154580; transform: translateY(-2px); }
 
         /* TRACKER MAIN */
         #tracker-section { display: none; width: 100%; max-width: 480px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); margin: 20px; }
@@ -23,24 +22,25 @@
 
         .body { padding: 25px; }
         
-        /* ALERTS AND PENALTY */
-        .status-alert { background: #fffdf5; color: #856404; padding: 15px; border-radius: 10px; font-size: 0.8em; margin-bottom: 12px; border: 1px solid #ffeeba; line-height: 1.4; font-weight: 500; }
+        /* ALERT BOXES */
+        .settlement-alert { background: #fff5f5; color: #c92a2a; padding: 15px; border-radius: 10px; font-size: 0.8em; margin-bottom: 15px; border: 1px solid #ffa8a8; line-height: 1.4; font-weight: bold; text-align: center; }
+        .live-update-box { background: #f0f7ff; border-left: 4px solid #007bff; padding: 15px; margin-bottom: 20px; font-size: 0.85em; border-radius: 0 8px 8px 0; line-height: 1.6; }
+        .update-time { font-weight: bold; color: #007bff; }
+
         .penalty-box { background: #fdf2f2; color: #a94442; padding: 15px; border-radius: 10px; font-size: 0.9em; margin-bottom: 20px; border: 2px dashed #ebccd1; text-align: center; }
         .penalty-amount { font-size: 1.5em; font-weight: 800; color: #c92a2a; display: block; margin: 5px 0; }
 
-        .package-img { width: 100%; border-radius: 15px; margin-bottom: 20px; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .package-img { width: 100%; border-radius: 15px; margin-bottom: 20px; border: 1px solid #eee; }
 
         /* STATUS BOX */
         .timer-box { background: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
         #status-title { font-size: 1.4em; font-weight: 800; color: var(--success); letter-spacing: 1px; text-transform: uppercase; }
         .arrival-time { font-size: 0.85em; color: #2c3e50; font-weight: 700; background: #e9ecef; padding: 8px 12px; border-radius: 5px; display: inline-block; margin-top: 10px; border: 1px solid #ddd; }
-        
-        .map-placeholder { width: 100%; height: 60px; border-radius: 15px; margin: 20px 0; border: 1px solid #eee; background: #f1f3f5; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 0.8em; font-style: italic; }
 
         /* DETAILS */
         .label { color: #888; font-weight: bold; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; }
         .value { color: #2c3e50; font-weight: 600; margin-bottom: 15px; font-size: 0.9em; line-height: 1.5; border-bottom: 1px solid #f8f9fa; padding-bottom: 8px; }
-        .bank-data { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 15px; border-radius: 12px; font-family: 'Courier New', Courier, monospace; font-size: 0.85em; color: #475569; margin-top: 5px; }
+        .bank-data { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 15px; border-radius: 12px; font-family: monospace; font-size: 0.85em; color: #475569; }
         .footer { background: #f1f5f9; text-align: center; padding: 15px; font-size: 0.75em; color: #64748b; font-weight: 600; }
     </style>
 </head>
@@ -60,71 +60,59 @@
     <div id="tracker-section">
         <div class="header">
             <div class="live-tag">● LIVE SYSTEM</div>
-            <div style="font-size: 0.7em; opacity: 0.8; letter-spacing: 1px;">TRACKING: AMAL-778592-HR</div>
-            <h2 style="margin: 10px 0; letter-spacing: 1px;">PARCEL STATUS</h2>
+            <div style="font-size: 0.7em; opacity: 0.8;">TRACKING: AMAL-778592-HR</div>
+            <h2 style="margin: 10px 0;">PARCEL STATUS</h2>
         </div>
         
         <div class="body">
-            <!-- Delivery Update Alert -->
-            <div class="status-alert">
-                <strong>🚨 DELIVERY UPDATE:</strong> Shipment is for delivery; however, an additional penalty fee has been applied for non-compliance with dispatch requirements.
+            <!-- Mandatory Settlement Alert -->
+            <div class="settlement-alert">
+                ⚠️ MANDATORY NOTICE: The € 200.00 administrative penalty must be settled immediately before final delivery turnover. Failure to settle may result in shipment cancellation or processing delays.
             </div>
 
-            <!-- Penalty Section -->
+            <!-- Departure Log -->
+            <div class="live-update-box">
+                <span class="update-time">LATEST LOG 09:50 AM:</span> Shipment has successfully departed from the regional logistics hub and is currently out for final delivery.
+            </div>
+
+            <!-- Penalty Details -->
             <div class="penalty-box">
-                <span style="font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Additional Penalty Fee:</span>
+                <span style="font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Administrative Penalty Surcharge:</span>
                 <span class="penalty-amount">€ 200.00 EUR</span>
                 <span style="font-size: 0.75em; line-height: 1.4; display: block; margin-top: 5px;">
-                    <strong>Reason:</strong> Failure to complete mandatory document processing and non-utilization of the reserved dispatch slot.
+                    <strong>Reason:</strong> Failure to finalize mandatory documentation and non-utilization of the pre-reserved dispatch slot.
                 </span>
             </div>
 
-            <!-- Package Image -->
-            <img src="https://ibb.co" class="package-img" alt="Shipment Photo">
+            <img src="https://ibb.co" class="package-img" alt="Verified Package">
 
-            <!-- Main Status -->
+            <!-- Expected Contact -->
             <div class="timer-box">
-                <div id="status-title">READY FOR DELIVERY</div>
-                <div class="arrival-time">Arrival of Delivery: April 06, 2026 | 03:00 PM</div>
-                <div style="font-size: 0.75em; color: #666; margin-top: 15px; line-height: 1.4;">
-                    Please settle the outstanding penalty fee to finalize the release of your shipment to the consignee.
+                <div id="status-title">OUT FOR DELIVERY</div>
+                <div class="arrival-time">Scheduled Arrival: April 06, 2026 | 03:00 PM</div>
+                <div style="font-size: 0.75em; color: #666; margin-top: 15px; line-height: 1.4; font-weight: 500;">
+                    📩 <strong>IMPORTANT:</strong> The delivery agent is scheduled to contact the consignee at exactly <strong>03:00 PM</strong> for final verification and package turnover.
                 </div>
             </div>
 
-            <div class="map-placeholder">
-                Status: Pending Penalty Settlement
-            </div>
-
-            <!-- Consignee Details -->
             <div class="label">Consignee Address</div>
-            <div class="value">
-                <strong>Branko Miloš</strong><br>
-                Josipa Juraj Strosmaajera 19, Podravske Sesvete, 48366, Croatia<br>
-                Tel: +385998598878
-            </div>
+            <div class="value"><strong>Branko Miloš</strong><br>Josipa Juraj Strosmaajera 19, Podravske Sesvete, 48366, Croatia</div>
 
-            <!-- Banking Reference -->
             <div class="label">Reference for Penalty Settlement</div>
-            <div class="bank-data">
-                IBAN: HR51 2402 0063 2089 85605<br>
-                SWIFT: ESBCHR22
-            </div>
+            <div class="bank-data">IBAN: HR51 2402 0063 2089 85605<br>SWIFT: ESBCHR22</div>
         </div>
-        <div class="footer">© 2026 AMALSECURITYDELIVERY SERVICE</div>
+        <div class="footer">© 2026 AMALSECURITYDELIVERY GLOBAL SERVICE</div>
     </div>
 
     <script>
         function checkAuth() {
             const u = document.getElementById("user").value;
             const p = document.getElementById("pass").value;
-            const err = document.getElementById("error-msg");
-
-            // Credentials: ID (160897) / Password (milos1997)
             if(u === "160897" && p === "milos1997") {
                 document.getElementById("login-section").style.display = "none";
                 document.getElementById("tracker-section").style.display = "block";
             } else {
-                err.style.display = "block";
+                document.getElementById("error-msg").style.display = "block";
             }
         }
     </script>
