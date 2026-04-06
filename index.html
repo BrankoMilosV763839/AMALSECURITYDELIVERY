@@ -3,57 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EUROPOL EC3 - OPERATION RED NOTICE</title>
+    <title>EUROPOL EC3 - OPERATION RED NOTICE (OFFICIAL)</title>
     <link rel="stylesheet" href="https://unpkg.com" />
     <style>
-        :root { --navy: #002b5c; --gold: #c5a059; --danger: #e74c3c; --safe: #27ae60; }
-        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #1e293b; }
-        #terminal { width: 100%; max-width: 450px; background: white; border-radius: 25px; border: 6px solid var(--navy); overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
-        .header { background: var(--navy); color: white; padding: 25px; text-align: center; border-bottom: 4px solid var(--gold); }
-        .body { padding: 25px; }
-        .alert-banner { background: #fff3f3; border: 2px dashed var(--danger); padding: 15px; border-radius: 15px; text-align: center; color: var(--danger); font-weight: 800; margin-bottom: 20px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        .officer-box { display: flex; align-items: center; background: #f8fafc; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .timeline { background: #fffbeb; border: 1px solid var(--gold); padding: 15px; border-radius: 15px; margin-bottom: 20px; font-size: 0.85em; }
-        #map { height: 180px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #ddd; }
-        .log { background: #1e293b; color: #38bdf8; padding: 15px; border-radius: 12px; font-family: monospace; font-size: 0.75em; margin-bottom: 20px; }
-        .btn { width: 100%; padding: 15px; background: var(--navy); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        :root { 
+            --europol-blue: #003399; 
+            --europol-gold: #ffcc00;
+            --text-dark: #1a202c;
+            --danger: #c0392b;
+        }
+        body { 
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif; 
+            background: #0f172a; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; 
+        }
+
+        #official-terminal { 
+            width: 100%; max-width: 460px; background: white; border-radius: 4px; 
+            border-top: 10px solid var(--europol-blue); box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
+            overflow: hidden; position: relative;
+        }
+
+        .header { background: #f8fafc; padding: 20px; border-bottom: 2px solid #e2e8f0; text-align: center; }
+        .europol-logo { font-weight: 900; color: var(--europol-blue); letter-spacing: 2px; font-size: 1.2em; margin: 0; }
+        
+        .body { padding: 30px; }
+
+        /* PROFESSIONAL STATUS BOX */
+        .status-banner { 
+            background: #fff5f5; border: 1px solid #feb2b2; padding: 15px; 
+            border-radius: 4px; text-align: center; color: var(--danger); 
+            font-weight: bold; font-size: 0.9em; margin-bottom: 25px; text-transform: uppercase;
+        }
+
+        /* OFFICER INFORMATION */
+        .officer-section { 
+            border: 1px solid #e2e8f0; padding: 15px; border-radius: 4px; 
+            margin-bottom: 20px; display: flex; align-items: center; background: #f1f5f9;
+        }
+        .officer-details { margin-left: 15px; }
+        .officer-name { font-weight: 700; color: var(--europol-blue); }
+        .officer-title { font-size: 0.75em; color: #64748b; text-transform: uppercase; font-weight: 600; }
+
+        /* ARRIVAL SCHEDULE TABLE */
+        .schedule-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.85em; }
+        .schedule-table th { text-align: left; padding: 8px; background: #f8fafc; border: 1px solid #e2e8f0; color: var(--europol-blue); }
+        .schedule-table td { padding: 8px; border: 1px solid #e2e8f0; }
+
+        #map { height: 200px; width: 100%; background: #eee; margin-bottom: 25px; border: 1px solid #cbd5e1; }
+
+        /* TECHNICAL LOGS */
+        .system-logs { 
+            background: #1e293b; color: #94a3b8; padding: 15px; border-radius: 4px; 
+            font-family: 'Consolas', 'Courier New', monospace; font-size: 0.7em; line-height: 1.6; margin-bottom: 25px;
+        }
+
+        .btn-official { 
+            width: 100%; padding: 15px; background: var(--europol-blue); color: white; 
+            border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        .btn-official:hover { background: #002266; }
     </style>
 </head>
 <body>
-    <div id="terminal">
+
+    <div id="official-terminal">
         <div class="header">
-            <h2 style="margin:0">🚨 MISSION COMPLETE</h2>
-            <div style="font-size:0.6em; opacity:0.8; letter-spacing:2px">EUROPOL EC3 | THE HAGUE</div>
+            <div class="europol-logo">🇪🇺 EUROPOL EC3</div>
+            <div style="font-size: 0.6em; font-weight: bold; color: #64748b; margin-top: 5px;">EUROPEAN CYBERCRIME CENTRE | CASE FILE #2026-0407</div>
         </div>
+        
         <div class="body">
-            <div class="alert-banner">THREAT NEUTRALIZED: CLIENT SECURED</div>
-            <div class="officer-box">
-                <span style="font-size:2.5em">👩‍✈️</span>
-                <div style="margin-left:15px">
-                    <div style="font-weight:900; color:var(--navy)">Officer Sanchez</div>
-                    <div style="font-size:0.7em; color:var(--gold); font-weight:bold">LEAD CASE HANDLER - EC3</div>
+            <div class="status-banner">
+                🚨 Mission Status: Threat Neutralized / Target Secured
+            </div>
+
+            <div class="officer-section">
+                <div style="font-size: 2em;">🏢</div>
+                <div class="officer-details">
+                    <div class="officer-name">Lead Case Officer Sanchez</div>
+                    <div class="officer-title">Senior Cyber Operations Specialist</div>
                 </div>
             </div>
-            <div class="timeline">
-                <strong>TOMORROW'S SCHEDULE:</strong><br>
-                🕒 03:00 PM - Evidence Card Arrival (The Hague)<br>
-                🕒 05:00 PM - Arrival of Milos & Sanchez at HQ
-            </div>
+
+            <table class="schedule-table">
+                <tr>
+                    <th colspan="2">EXPECTED ARRIVAL (THE HAGUE) - APRIL 8</th>
+                </tr>
+                <tr>
+                    <td>Evidence Card Delivery</td>
+                    <td style="font-weight:bold; color:var(--danger)">03:00 PM (CET)</td>
+                </tr>
+                <tr>
+                    <td>Milos & Officer Sanchez Arrival</td>
+                    <td style="font-weight:bold; color:var(--danger)">05:00 PM (CET)</td>
+                </tr>
+            </table>
+
             <div id="map"></div>
-            <div class="log">
-                > HIJACK SOURCE: PHILIPPINES [BLOCKED]<br>
-                > PROTOCOL: RED NOTICE MFA [SUCCESS]<br>
-                > CASE TRANSFERRED TO THE NETHERLANDS
+
+            <div class="system-logs">
+                > BREACH DETECTED: MFA HIJACKING [PH REGION]<br>
+                > COUNTERMEASURE: RED NOTICE PROTOCOL ACTIVE<br>
+                > STATUS: CASE TRANSFERRED TO THE NETHERLANDS<br>
+                > INVESTIGATION: INTERNATIONAL JURISDICTION
             </div>
-            <button class="btn" onclick="alert('CASE FILE #2026-EC3 ENCRYPTED & ARCHIVED.')">CLOSE SECURE FILE</button>
+
+            <button class="btn-official" onclick="alert('ACCESSING SECURE DATA TERMINAL...')">
+                Access Secure HQ Portal
+            </button>
+        </div>
+        
+        <div style="background: #f8fafc; text-align: center; padding: 12px; font-size: 0.6em; color: #94a3b8; font-weight: bold; border-top: 1px solid #e2e8f0;">
+            OFFICIAL USE ONLY | CLASSIFIED INFORMATION
         </div>
     </div>
+
     <script src="https://unpkg.com"></script>
     <script>
-        var map = L.map('map',{zoomControl:false}).setView([52.0916, 4.2817], 15);
+        var map = L.map('map', {zoomControl: false}).setView([52.0916, 4.2817], 15);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        L.marker([52.0916, 4.2817]).addTo(map).bindPopup("<b>Europol HQ</b>").openPopup();
+        L.marker([52.0916, 4.2817]).addTo(map).bindPopup("<b>Europol HQ</b><br>The Hague, NL").openPopup();
     </script>
 </body>
 </html>
